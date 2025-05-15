@@ -1,6 +1,5 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { $ } from 'zx'
 
 // Custom APIs for renderer
 const api = {}
@@ -12,7 +11,6 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
-    $`curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp`
   } catch (error) {
     console.error(error)
   }
