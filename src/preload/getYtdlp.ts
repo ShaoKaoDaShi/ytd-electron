@@ -3,6 +3,10 @@ import { createWriteStream } from 'node:fs'
 import { access, chmod, mkdir, rename } from 'node:fs/promises'
 import path from 'node:path'
 import { $ } from 'zx'
+import { pipeline as streamPipeline } from 'node:stream/promises'
+import got from 'got'
+import fs from 'node:fs'
+import stream from 'node:stream'
 // import https from 'https'
 
 const platform = process.platform
@@ -47,40 +51,21 @@ export async function checkYtdlp() {
 checkYtdlp()
 // 下载最新的 yt-dlp
 async function downloadLatestVersion(ytDlpPath) {
-  if (!isWindows) {
-    await chmod(fileName, 0o755)
-  }
-
   return new Promise((resolve, reject) => {
-    const tempPath = ytDlpPath + '.temp'
-    const fileStream = createWriteStream(tempPath)
-    axios
-      .get(downloadUrl, {
-        responseType: 'stream'
-      })
-      .then((res) => {
-        res
-        fileStream.write(res.data)
-        fileStream.end()
-        fileStream.on('finish', async () => {
-          fileStream.close()
-          console.log('下载完成')
-          try {
-            // 赋予执行权限（非 Windows 系统）
-            if (!isWindows) {
-              await chmod(tempPath, 0o755)
-            }
-            // 替换现有文件
-            await rename(tempPath, ytDlpPath)
-            resolve()
-          } catch (error) {
-            reject(error)
-          }
-        })
+    streamPipeline(got.stream(downloadUrl), fs.createWriteStream(ytDlpPath))
+      .then(() => {
+        console.log('下载完成')
+
+        resolve(ytDlpPath)
+        if (!isWindows) {
+          chmod(fileName, 0o755)
+        }
       })
       .catch((error) => {
-        fileStream.destroy()
+        console.error('下载失败:', error)
         reject(error)
       })
+  }).catch((error) => {
+    console.error('下载失败:', error)
   })
 }
