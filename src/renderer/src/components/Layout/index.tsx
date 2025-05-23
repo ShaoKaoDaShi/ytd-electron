@@ -1,74 +1,49 @@
 import React from 'react'
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons'
-import type { MenuProps } from 'antd'
-import { Breadcrumb, Layout, Menu, theme } from 'antd'
+import { DashboardOutlined, LaptopOutlined, NotificationOutlined, UserOutlined, } from '@ant-design/icons'
+import { Breadcrumb, Flex, Layout, Menu, theme } from 'antd'
+import { BrowserRouter, useNavigate } from 'react-router'
 
 const { Header, Content, Sider } = Layout
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`
-}))
-
-const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-  (icon, index) => {
-    const key = String(index + 1)
-
-    return {
-      key: `sub${key}`,
-      icon: React.createElement(icon),
-      label: `subnav ${key}`,
-      children: Array.from({ length: 4 }).map((_, j) => {
-        const subKey = index * 4 + j + 1
-        return {
-          key: subKey,
-          label: `option${subKey}`
-        }
-      })
-    }
-  }
-)
-
-const LayoutComp: React.FC = () => {
+const items1=[{
+  key:'/download',
+  label:'下载'
+},{
+  key:'/settings',
+  label:'设置',
+}]
+type LayoutComProps = {
+  children?: React.ReactNode
+}
+const LayoutComp = (props:LayoutComProps) => {
+  const {children} = props
+  const navigate = useNavigate()
   const {
-    token: { colorBgContainer, borderRadiusLG }
+    token: { colorBgContainer, borderRadiusLG, colorBorderSecondary, marginXS }
   } = theme.useToken()
 
   return (
+    
     <Layout style={{ height: '100vh' }}>
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
+        <Sider width={200} style={{ background: colorBgContainer, borderRight:`1px solid ${colorBorderSecondary}`, borderRadius: borderRadiusLG, margin:marginXS }} >
           <div>
-            <div style={{padding:'24px', background:'black'}}>asdf</div>
+            <Flex style={{padding:'24px', color:'springgreen', fontSize:'64px'}} align='center' justify='center'><DashboardOutlined /></Flex>
             <Menu
-              title="asdf"
               mode="inline"
-              defaultSelectedKeys={['1']}
+              onClick={({ key }) => {
+                navigate(key)
+              }}
+              defaultSelectedKeys={['download']}
               defaultOpenKeys={['sub1']}
               style={{ height: '100%', borderRight: 0 }}
-              items={items2}
+              items={items1}
             />
           </div>
         </Sider>
-        <Layout>
-          <Breadcrumb
-            items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
-            style={{ padding: '24px', background: 'white' }}
-          />
-          <Layout style={{ padding: '24px 24px' }}>
-            <Content
-              style={{
-                padding: 24,
-                margin: 0,
-                minHeight: 280,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG
-              }}
-            >
-              Content
-            </Content>
-          </Layout>
-        </Layout>
+        <Content>
+          {children}
+        </Content>
       </Layout>
     </Layout>
   )

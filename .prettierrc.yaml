@@ -2,3 +2,14 @@ singleQuote: true
 semi: false
 printWidth: 100
 trailingComma: none
+@typescript-eslint/explicit-function-return-type: off
+@typescript-eslint/no-unused-vars: off
+tabWidth: 2
+useTabs: false
+bracketSpacing: true
+bracketSameLine: true
+arrowParens: always
+htmlWhitespaceSensitivity: ignore
+vueIndentScriptAndStyle: false
+endOfLine: auto
+singleAttributePerLine: false

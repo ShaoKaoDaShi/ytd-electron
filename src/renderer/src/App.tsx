@@ -1,16 +1,21 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+
 import LayoutComp from './components/Layout'
+import { RoutesList } from './components/RoutesList'
+import { BrowserRouter, Route, Routes } from 'react-router'
+import '../src/assets/main.css'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+ 
 
   return (
-    <>
-    <LayoutComp/>
-
-      {/* <Versions></Versions> */}
-    </>
+    <BrowserRouter>
+    <Routes>
+    <Route path="/*" element={<LayoutComp>
+      <RoutesList />
+    </LayoutComp>} />
+    </Routes>
+    
+    </BrowserRouter>
   )
 }
 
